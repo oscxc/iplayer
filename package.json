@@ -1,0 +1,33 @@
+{
+  "name": "iplayer",
+  "version": "1.0.0",
+  "description": "HTML5 video、WebRTC 视频播放组件",
+  "main": "./dist/iplayer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack",
+    "server": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oscxc/iplayer.git"
+  },
+  "keywords": [
+    "iplayer",
+    "iplayer.js"
+  ],
+  "author": "七八个星天怪",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oscxc/iplayer/issues"
+  },
+  "homepage": "https://github.com/oscxc/iplayer#readme",
+  "dependencies": {
+    "webpack": "^3.5.5"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.5",
+    "style-loader": "^0.18.2",
+    "webpack-dev-server": "^2.7.1"
+  }
+}
