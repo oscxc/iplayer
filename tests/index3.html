@@ -5,6 +5,90 @@
     <title>Title</title>
 </head>
 <body>
+<button id="bt">输出已缓存视频时间</button>
+<script>
+    var video = document.createElement("video");
+    video.setAttribute("controls",true);
+    video.src = "../videos/4.mp4";
+    document.body.appendChild(video);
+    video.addEventListener("loadstart",function () {
+        console.log("loadstart");
+        console.log(this.offsetWidth);
+        console.log(this.duration);
+    });
+    video.addEventListener("durationchange",function () {
+        console.log("durationchange");
+        console.log(this.offsetWidth);
+        console.log(this.duration);
+    });
+    video.addEventListener("loadedmetadata",function () {
+        console.log("loadedmetadata");
+        console.log(this.offsetWidth);
+    });
+    video.addEventListener("loadeddata",function () {
+        console.log("loadeddata");
+        console.log(this.offsetWidth);
+    });
+    video.addEventListener("canplay",function () {
+        console.log("canplay");
+        console.log(this.offsetWidth);
+    });
+    video.addEventListener("canplaythrough",function () {
+        console.log("canplaythrough");
+        console.log(this.offsetWidth);
+    });
+//    video.addEventListener("progress",function () {
+//        console.log("progress");
+//    });
+//    video.addEventListener("suspend",function () {
+//        console.log("suspend");
+//    });
+//    video.addEventListener("abort",function () {
+//        console.log("abort");
+//    });
+//    video.addEventListener("stalled",function () {
+//        console.log("stalled");
+//    });
+//    video.addEventListener("pause",function () {
+//        console.log("pause");
+//    });
+//    video.addEventListener("play",function () {
+//        console.log("play");
+//    });
+//    video.addEventListener("playing",function () {
+//        console.log("playing");
+//    });
 
+
+    video.addEventListener("waiting",function () {
+        console.log("waiting");
+    });
+
+    video.addEventListener("seeking",function () {
+        console.log("seeking");
+    });
+    video.addEventListener("seeked",function () {
+        console.log("seeked");
+    });
+    video.addEventListener("timeupdate",function () {
+        console.log("timeupdate");
+        console.log(this.buffered.end(0));
+    });
+    video.addEventListener("ended",function () {
+        console.log("ended");
+    });
+    video.addEventListener("ratechange",function () {
+        console.log("ratechange");
+    });
+
+    video.addEventListener("volumechange",function () {
+        console.log("volumechange");
+    });
+
+    document.getElementById("bt").onclick = function () {
+        console.log(video.buffered.end(0));
+    };
+
+</script>
 </body>
 </html>

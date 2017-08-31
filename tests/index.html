@@ -2,22 +2,270 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>iplayer</title>
-    <script src="../dist/iplayer.js"></script>
+    <title>iplayer app</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        body{
+            position: relative;
+        }
+        #wrapper{
+            position: relative;
+            margin: 0 auto;
+        }
+        #iplayer::-webkit-media-controls {
+            display:none !important;
+        }
+
+
+        #videoCover{
+            position: absolute;
+            width: inherit;
+            height: inherit;
+        }
+        #controls_wrapper{
+            position: absolute;
+            height: 55px;
+            bottom: 10px;
+
+        }
+        #progress_wrapper{
+            position: absolute;
+            width: inherit;
+            height: 13px;
+            cursor: pointer;
+        }
+        #progress_bg{
+            position: absolute;
+            width: inherit;
+            height: 3px;
+            top: 5px;
+            background: rgba(255,255,255,0.4);
+            transition: transform .2s;
+        }
+        #progress_loaded{
+            position: absolute;
+            height: 3px;
+            top: 5px;
+            background: rgba(255,255,255,0.6);
+            transition: transform .2s;
+        }
+        #progress_current{
+            position: absolute;
+            height: 3px;
+            top: 5px;
+            background: red;
+            transition: transform .2s;
+        }
+        #progress_ball{
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            top:6px;
+            background: red;
+            border-radius: 50%;
+            transition: transform .2s;
+        }
+        #progress_wrapper:hover>#progress_bg{
+            transform: scaleY(1.5);
+        }
+        #progress_wrapper:hover>#progress_loaded{
+            transform: scaleY(1.5);
+        }
+        #progress_wrapper:hover>#progress_current{
+            transform: scaleY(1.5);
+        }
+        #progress_wrapper:hover>#progress_ball{
+            transform: scale(13,13);
+        }
+        #buttons_wrapper{
+            position: absolute;
+            width: inherit;
+            height: 42px;
+            top:13px;
+            background: rgba(0,0,0,0.6);
+        }
+        .bt{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            top:6px;
+            fill:#fff;
+            cursor: pointer;
+        }
+        #play_pause{
+
+        }
+    </style>
+    <script src="../src/mjjm/mjjm.js"></script>
+    <script src="../src/iplayer/iplayer.js"></script>
+    <script>
+        $(function () {
+            window.player = new iplayer("wrapper","../videos/2.mp4");
+
+            new Promise(function (resolve) {
+                player.loadedData(resolve);
+            }).then(function () {
+                player.init();
+
+                var controlsW = player.W * 0.96;
+                var controlsL = player.W*(1-0.96)/2;
+                $("#controls_wrapper").W(controlsW).L(controlsL);
+
+                var progress_current = $("#progress_current").el;
+                var progress_ball = $("#progress_ball").el;
+
+                player.timeUpdate(function () {
+                    if(!player.state.progressMouseDown){
+                        var w = Math.ceil(player.video.currentTime * controlsW / player.duration);
+                        $("#progress_current").W(w);
+                        $("#progress_ball").L(w-1);
+                    }
+                    //$("#progress_loaded").W(player.video.buffered.end(0) * controlsW / player.duration);
+                });
+                player.progress(function () {
+                    var length = player.video.buffered.length;
+                    //$.log(player.video.buffered.start(length-1));
+                });
+
+                $("#progress_wrapper").addEvent("mousedown",function (e) {
+                    player.state.progressMouseDown = true;
+                    player.pause();
+                    var w;
+                    function changeProgressBar(args) {
+                        var clientX = args[0].clientX;
+                        w = clientX - ($.W-player.W)/2 - controlsL;
+                        if(w<0){
+                            w = 0;
+                        }
+                        else if(w>controlsW){
+                            w = controlsW;
+                        }
+                        progress_current.style.width = w + "px";
+                        progress_ball.style.left = w - 1 + "px";
+                    }
+                    changeProgressBar([e]);
+
+                    var throttle = new $.Throttle(20,changeProgressBar);
+                    var mouseMove = function () {
+                        throttle.filter(arguments);
+                    };
+                    var mouseUp = function () {
+                        player.state.progressMouseDown = false;
+                        player.state.timeOver = w === controlsW?true:false;
+                        player.video.currentTime = (w / controlsW) * player.duration;
+                        if(player.state.playing){
+                            player.canPlay(player.play);
+                        }
+                        else{
+                            player.canPlay(player.pause);
+                        }
+                        document.removeEventListener("mousemove",mouseMove);
+                        document.removeEventListener("mouseup",mouseUp);
+                    };
+                    document.addEventListener("mousemove",mouseMove);
+                    document.addEventListener("mouseup",mouseUp);
+                });
+                $("#play_pause").click(function () {
+                    if(player.state.playing){
+                        this.children[0].setAttribute("xlink:href","#play");
+                        player.pause();
+                    }
+                    else{
+                        this.children[0].setAttribute("xlink:href","#pause");
+                        player.play();
+                    }
+                    player.state.playing = !player.state.playing;
+                });
+            });
+
+
+
+
+            // player.video.addEventListener("seeking",function () {
+            //     console.log("seeking!");
+            // });
+            // player.video.addEventListener("seeked",function () {
+            //     console.log("seeked!");
+            // });
+            //播放
+            // $("#play").click(function () {
+            //     player.play();
+            // });
+            // $("#pause").click(function () {
+            //     player.pause();
+            // });
+            // $("#stop").click(function () {
+            //     player.stop();
+            // });
+            // $("#currentTime").click(function () {
+            //     console.log(player.currentTime(40));
+            // });
+            // $("#setVolume").click(function () {
+            //     console.log(player.volume(0.5));
+            // });
+            // $("#snapshot").click(function () {
+            //     player.snapshot(function (img) {
+            //         $.log(img);
+            //         //document.body.appendChild(img);
+            //         $("#saveImage").click(function () {
+            //             player.saveImage(img.src,"test.jpg");
+            //         });
+            //     },"image/jpeg",0.8);
+            // });
+            // $("#multipleSnapshot").click(function () {
+            //     player.multipleSnapshot(4,3000,function (imgs) {
+            //         $.each(imgs,function (k,v) {
+            //             $.log(v);
+            //             document.body.appendChild(v);
+            //         });
+            //
+            //     });
+            // });
+            // $("#openCurrentTimeListener").click(function () {
+            //     player.openCurrentTimeListener(100,function (time) {$.log(time);});
+            // });
+            // $("#closeCurrentTimeListener").click(function () {
+            //     player.closeCurrentTimeListener();
+            // });
+        });
+
+    </script>
 </head>
 <body>
-<div class="controll-bar">
-    <div id="play" class="bt">播放</div>
-    <div id="pause" class="bt">暂停</div>
-    <div id="stop" class="bt">停止</div>
-    <div id="currentTime" class="bt">currentTime</div>
-    <div id="setVolume" class="bt">设置音量</div>
-    <div id="snapshot" class="bt">截图</div>
-    <div id="saveImage" class="bt">下载图片</div>
-    <div id="multipleSnapshot" class="bt">多重截图</div>
-    <div id="openCurrentTimeListener" class="bt">监听时间</div>
-    <div id="closeCurrentTimeListener" class="bt">停止监听</div>
+<svg style="display: none;">
+    <symbol id="play">
+        <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+    </symbol>
+    <symbol id="pause">
+        <path d="M14,19H18V5H14M6,19H10V5H6V19Z" />
+    </symbol>
+    <symbol id="stop">
+        <path d="M0.069,32.482L64.48-32.205H36.915v-45.85h-73.83l-0.139,45.85h-27.15L0.069,32.482z M73.623,78.055V59.632 H-73.623v18.423H73.623z" transform="matrix(1 0 0 -1 0 0)"></path>
+    </symbol>
+</svg>
+<div id="wrapper">
+    <div id="videoCover">
+        <div id="controls_wrapper">
+            <div id="progress_wrapper">
+                <div id="progress_bg"></div>
+                <div id="progress_loaded"></div>
+                <div id="progress_current"></div>
+                <div id="progress_ball"></div>
+            </div>
+            <div id="buttons_wrapper">
+                <svg id="play_pause" class="bt" viewBox="0 0 24 24">
+                    <use xlink:href="#play"></use>
+                </svg>
+            </div>
+        </div>
+    </div>
 </div>
-<div id="wrapper"></div>
 </body>
 </html>
