@@ -17,23 +17,24 @@
         }
         #wrapper{
             position: relative;
+        }
+        #iplayer{
+            position: relative;
+            display: block;
             margin: 0 auto;
         }
         #iplayer::-webkit-media-controls {
             display:none !important;
         }
-
-
         #videoCover{
             position: absolute;
-            width: inherit;
-            height: inherit;
+            z-index: 2147483647;
         }
         #controls_wrapper{
             position: absolute;
             height: 55px;
             bottom: 10px;
-
+            background: rgba(0,0,0,0.4);
         }
         #progress_wrapper{
             position: absolute;
@@ -46,8 +47,8 @@
             width: inherit;
             height: 3px;
             top: 5px;
-            background: rgba(255,255,255,0.4);
             transition: transform .2s;
+            background: rgba(255,255,255,0.3);
         }
         #progress_loaded{
             position: absolute;
@@ -89,7 +90,6 @@
             width: inherit;
             height: 42px;
             top:13px;
-            background: rgba(0,0,0,0.6);
         }
         .bt{
             position: absolute;
@@ -99,21 +99,39 @@
             fill:#fff;
             cursor: pointer;
         }
+        .bt:hover{
+            opacity: 0.6;
+        }
         #play_pause{
-
+            left:0;
+        }
+        #stop{
+            left:30px;
+        }
+        #volume{
+            left:60px;
+        }
+        #fullScreen{
+            right: 0;
         }
     </style>
+    <!--<script src="../src/js/adapter.js"></script>-->
     <script src="../src/mjjm/mjjm.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/3.3.1/screenfull.min.js"></script>-->
     <script src="../src/iplayer/iplayer.js"></script>
     <script>
         $(function () {
-            window.player = new iplayer("wrapper","../videos/2.mp4");
+            var src = "../videos/2.mp4";
+            //var src = "http://172.16.64.166:80/vod/000000000000/99999999999999999999999999999999/0_1503472167-1503472177.mp4";
+            //var src = "../videos/1.mp4";
+            window.player = new iplayer("wrapper",src);
 
             new Promise(function (resolve) {
                 player.loadedData(resolve);
             }).then(function () {
                 player.init();
 
+                $("#videoCover").W(player.W).H(player.H).L(($.W-player.W)/2).T(($.H-player.H)/2);
                 var controlsW = player.W * 0.96;
                 var controlsL = player.W*(1-0.96)/2;
                 $("#controls_wrapper").W(controlsW).L(controlsL);
@@ -133,7 +151,12 @@
                     var length = player.video.buffered.length;
                     //$.log(player.video.buffered.start(length-1));
                 });
-
+//                player.seeking(function () {
+//                    $.log("seeking");
+//                });
+//                player.seeked(function () {
+//                    $.log("seeked");
+//                });
                 $("#progress_wrapper").addEvent("mousedown",function (e) {
                     player.state.progressMouseDown = true;
                     player.pause();
@@ -172,6 +195,8 @@
                     document.addEventListener("mousemove",mouseMove);
                     document.addEventListener("mouseup",mouseUp);
                 });
+
+
                 $("#play_pause").click(function () {
                     if(player.state.playing){
                         this.children[0].setAttribute("xlink:href","#play");
@@ -183,30 +208,58 @@
                     }
                     player.state.playing = !player.state.playing;
                 });
+                $("#stop").click(function () {
+                    $("#play_pause").el.children[0].setAttribute("xlink:href","#play");
+                    player.pause();
+                    player.state.playing = false;
+                    player.video.currentTime = 0;
+                    progress_current.style.width = progress_ball.style.left = 0;
+                });
+
+
+                function launchFullscreen(element) {
+                    if(element.requestFullscreen) {
+                        element.requestFullscreen();
+                    } else if(element.mozRequestFullScreen) {
+                        element.mozRequestFullScreen();
+                    } else if(element.webkitRequestFullscreen) {
+                        element.webkitRequestFullscreen();
+                    } else if(element.msRequestFullscreen) {
+                        element.msRequestFullscreen();
+                    }
+                }
+                window.onresize = function () {
+                    if(!player.state.fullScreen){
+                        $("#videoCover").L((window.innerWidth - player.W)/2);
+                    }
+                };
+
+                $.each(["", "webkit", "moz", "ms"],function (k,v) {
+                    $(player.video).addEvent(v+"fullscreenchange",function () {
+                        player.W = window.innerWidth;
+                        player.H = window.innerHeight;
+
+                        var videoCover = $("#videoCover").el;
+                        videoCover.style.width = player.W + "px";
+                        videoCover.style.height = player.H + "px";
+                        videoCover.style.left = videoCover.style.top = 0;
+                        controlsW = player.W * 0.96;
+                        controlsL = player.W*(1-0.96)/2;
+                        $("#controls_wrapper").W(controlsW).L(controlsL);
+                    });
+                });
+
+                $("#fullScreen").click(function () {
+                    player.state.fullScreen = true;
+                    //screenfull.request(player.video);
+                    launchFullscreen(player.video);
+
+                });
             });
 
 
 
 
-            // player.video.addEventListener("seeking",function () {
-            //     console.log("seeking!");
-            // });
-            // player.video.addEventListener("seeked",function () {
-            //     console.log("seeked!");
-            // });
-            //播放
-            // $("#play").click(function () {
-            //     player.play();
-            // });
-            // $("#pause").click(function () {
-            //     player.pause();
-            // });
-            // $("#stop").click(function () {
-            //     player.stop();
-            // });
-            // $("#currentTime").click(function () {
-            //     console.log(player.currentTime(40));
-            // });
             // $("#setVolume").click(function () {
             //     console.log(player.volume(0.5));
             // });
@@ -247,10 +300,17 @@
         <path d="M14,19H18V5H14M6,19H10V5H6V19Z" />
     </symbol>
     <symbol id="stop">
-        <path d="M0.069,32.482L64.48-32.205H36.915v-45.85h-73.83l-0.139,45.85h-27.15L0.069,32.482z M73.623,78.055V59.632 H-73.623v18.423H73.623z" transform="matrix(1 0 0 -1 0 0)"></path>
+        <path d="M18,18H6V6H18V18Z" />
+    </symbol>
+    <symbol id="volume_high">
+        <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+    </symbol>
+    <symbol id="fullScreen">
+        <path d="M5,5H10V7H7V10H5V5M14,5H19V10H17V7H14V5M17,14H19V19H14V17H17V14M10,17V19H5V14H7V17H10Z" />
     </symbol>
 </svg>
 <div id="wrapper">
+    <video id="iplayer"></video>
     <div id="videoCover">
         <div id="controls_wrapper">
             <div id="progress_wrapper">
@@ -262,6 +322,16 @@
             <div id="buttons_wrapper">
                 <svg id="play_pause" class="bt" viewBox="0 0 24 24">
                     <use xlink:href="#play"></use>
+                </svg>
+                <svg id="stop" class="bt" viewBox="0 0 24 24">
+                    <use xlink:href="#stop"></use>
+                </svg>
+                <svg id="volume" class="bt" viewBox="0 0 24 24">
+                    <use xlink:href="#volume_high"></use>
+                </svg>
+
+                <svg id="fullScreen" class="bt" viewBox="0 0 24 24">
+                    <use xlink:href="#fullScreen"></use>
                 </svg>
             </div>
         </div>

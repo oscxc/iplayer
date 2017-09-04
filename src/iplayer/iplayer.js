@@ -5,13 +5,7 @@ window.iplayer = function (wrapperId,src) {
     ////////////////////////////////////////////      公共函数
 
     ////////////////////////////////////////////      插件变量
-    var video = this.video = $.create("video",{
-        style:"width: inherit;",
-        id:"iplayer",
-        //controls:true
-    });
-    var wrapper = this.wrapper = $("#"+wrapperId).el;
-    $(wrapper).append(video);
+    var video = this.video = $("#iplayer").el;
 
     var mediaSource = new MediaSource();
     video.src = URL.createObjectURL(mediaSource);
@@ -43,7 +37,8 @@ window.iplayer = function (wrapperId,src) {
     this.state = {
         progressMouseDown:false,
         playing:false,
-        timeOver:false
+        timeOver:false,
+        fullScreen:false
     };
 
 
@@ -119,6 +114,12 @@ window.iplayer = function (wrapperId,src) {
         }
         $(video).addEvent("canplay",handle);
     };
+    this.seeking = function (callback) {
+        $(video).addEvent("seeking",callback);
+    };
+    this.seeked = function (callback) {
+        $(video).addEvent("seeked",callback);
+    };
     this.init = function () {
         this.duration = video.duration;
         var w = video.clientWidth;
@@ -126,8 +127,7 @@ window.iplayer = function (wrapperId,src) {
         this.P = w/h;
         this.W = 1000;
         this.H = this.W/this.P;
-        $(wrapper).W(this.W).H(this.H).T(($.H-this.H)/2);
-
+        $(video).W(this.W).T(($.H-this.H)/2);
     };
     ////////////////////////////////////////////      事件
 
