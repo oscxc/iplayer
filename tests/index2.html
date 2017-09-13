@@ -2,29 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>画框和圆</title>
+    <title>非线性编辑</title>
     <style>
         *{
             margin: 0;
             padding: 0;
         }
         #bg{
-            position: relative;
+            position: absolute;
             width: 1000px;
-            height: 600px;
-            margin: 0 auto;
+            height: 563px;
+            line-height: 563px;
+            top:50%;
+            left:50%;
+            margin-left: -500px;
+            margin-top: -282px;
             background: #555;
+            text-align: center;
+            color: white;
+            font-size: 30px;
+            user-select: none;
+            -ms-user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+        }
+        #cc{
+            position: fixed;
+            left: 10px;
+            top:10px;
+        }
+        .bt{
+            width: 80px;
+            height: 24px;
+            line-height: 24px;
         }
     </style>
-    <script src="../mjjm/mjjm.js"></script>
+    <script src="../src/mjjm/mjjm.js"></script>
+    <link rel="stylesheet" href="targetTrack/targetTrack.css">
+    <script src="targetTrack/targetTrack.js"></script>
     <script>
-        $(function () {
+        function timer(el,interval) {
+            var max = 30;
+            var t;
+            this.currentTime = 0;
+            var _this = this;
 
+            this.play = function () {
+                if(t)
+                    clearInterval(t);
+                t = setInterval(function () {
+                    _this.currentTime += interval /1000;
+                    if(_this.currentTime >= max){
+                        _this.currentTime = max;
+                        clearInterval(t);
+                    }
+                    el.innerText = new Number(_this.currentTime).toFixed(3);
+                },interval);
+            };
+            this.pause = function () {
+                clearInterval(t);
+            };
+            this.reset = function () {
+                this.currentTime = 0;
+                el.innerText = new Number(this.currentTime).toFixed(3);
+            };
+            this.set = function (time) {
+                this.currentTime = time;
+                el.innerText = new Number(this.currentTime).toFixed(3);
+            };
+        }
+        $(function () {
+            var bg = $('#bg').el;
+            var num = $('#num').el;
+            var tm = new timer(num,11);
+            var tt;
+
+            $("#play").click(function () {
+                tm.play();
+                if(tt){
+                    tt.previewRun();
+                }
+            });
+            $("#pause").click(function () {
+                tm.pause();
+                if(tt && tt.previewWaiting){
+                    tt.previewPause();
+                }
+            });
+            $("#reset").click(function () {
+                tm.reset();
+            });
+            $("#set").click(function () {
+                tm.set(10);
+            });
+            $("#edit").click(function () {
+                tt = new targetTrack({
+                    right:10,
+                    left:10,
+                    el:bg,
+                    player:tm,
+                    downloadCallback:function () {
+                        console.log(tt.exportData());
+                    }
+                });
+            });
         });
     </script>
 </head>
 <body>
-<div id="bg"></div>
-<div></div>
+<div id="cc">
+    <input id="play" class="bt" type="button" value="play">
+    <input id="pause" class="bt" type="button" value="pause">
+    <input id="reset" class="bt" type="button" value="reset">
+    <input id="set" class="bt" type="button" value="set10">
+    <input id="edit" class="bt" type="button" value="非线性编辑">
+</div>
+<div id="bg"><span id="num">0.000</span></div>
 </body>
 </html>

@@ -1,0 +1,235 @@
+#tt_container{
+    position: fixed;
+    width: 360px;
+    height: 480px;
+    background-color: white;
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    font-family: Verdana,Tahoma,Consolas,'Microsoft Yahei';
+    box-shadow: 5px 5px 10px #333;
+}
+
+/* region common*/
+#tt_header,#tt_main,#tt_title,#tt_targetWrapper,#tt_targetList,#tt_addTarget,#tt_preview,#tt_download,#tt_close,#tt_targetDetail,#tt_nodeDetail,#tt_fieldset,
+.tt_tag,#tt_customName,#tt_nameOK,#tt_targetName,#tt_timeList,#tt_addBegin,#tt_addEnd,#tt_confirm,#tt_drawElipse,#tt_drawRect,#tt_nodeTime,#tt_elWH,#tt_elPos,
+#tt_nodeConfirm,#tt_nodeCancle,.posAbsolute,#tt_error,#tt_goBack{
+    position: absolute;
+}
+#tt_header,#tt_main,#tt_title,#tt_targetWrapper,#tt_targetDetail,#tt_nodeDetail,#tt_error{
+    width: 360px;
+}
+#tt_container,#tt_targetList,#tt_addTarget,#tt_preview,#tt_download,#tt_close,#tt_fieldset,#tt_timeList,#tt_addBegin,#tt_addEnd,#tt_confirm,#tt_nodeConfirm,
+#tt_nodeCancle,#tt_goBack{
+    border-radius: 6px;
+}
+#tt_title,#tt_addTarget,#tt_targetList,#tt_targetName,#tt_timeList{
+    text-align: center;
+}
+#tt_targetList,#tt_addTarget,#tt_preview,#tt_download,#tt_close,#tt_fieldset,#tt_timeList,#tt_addBegin,#tt_addEnd,#tt_confirm,#tt_nodeConfirm,#tt_nodeCancle,
+#tt_goBack{
+    border:1px solid #555;
+}
+/* endregion*/
+
+/* region header*/
+#tt_header{
+    background: #707070;
+    cursor: move;
+    height: 40px;
+}
+#tt_title{
+    color: white;
+    line-height: 40px;
+}
+/* endregion*/
+
+/* region main*/
+#tt_main{
+    height: 440px;
+    top:40px;
+    overflow: hidden;
+}
+#tt_targetWrapper{
+    height: 440px;
+}
+#tt_targetList{
+    width: 352px;
+    height: 390px;
+    line-height: 390px;
+    left: 3px;
+    top:4px;
+    overflow-y: auto;
+    cursor: default;
+}
+#tt_addTarget,#tt_preview,#tt_download,#tt_close,#tt_addBegin,#tt_addEnd,#tt_confirm,#tt_nodeConfirm,#tt_nodeCancle,#tt_goBack{
+    bottom:5px;
+    font-size: 14px;
+    padding: 6px 15px;
+    cursor: pointer;
+}
+#tt_addTarget:hover,#tt_preview:hover,#tt_download:hover,#tt_close:hover,#tt_addBegin:hover,#tt_addEnd:hover,#tt_confirm:hover,#tt_nodeConfirm:hover,
+#tt_nodeCancle:hover,tt_goBack:hover{
+    background: #E5F2E7;
+}
+#tt_addTarget,#tt_addBegin{
+    left: 3px;
+}
+#tt_preview,#tt_addEnd{
+    left: 100px;
+}
+#tt_download{
+    left: 170px;
+}
+#tt_close,#tt_confirm,#tt_nodeCancle,#tt_goBack{
+    right: 6px;
+}
+
+#tt_targetDetail,#tt_nodeDetail,#tt_error{
+    height: 440px;
+    left:360px;
+    background: white;
+}
+#tt_fieldset{
+    font-size: 14px;
+    width: 332px;
+    height: 110px;
+    left: 3px;
+    top:4px;
+    padding: 0 10px;
+}
+#tt_legend{
+
+}
+.tt_tag{
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.tt_tag:hover{
+    border-color: #3B6FD6;
+}
+#tt_tag1,#tt_tag2,#tt_tag3{
+    top:25px;
+}
+#tt_tag1{
+    left:25px;
+}
+#tt_tag2{
+    left:115px;
+}
+#tt_tag3{
+    left:205px;
+}
+#tt_customName{
+    left: 25px;
+    top:70px;
+    border:1px solid #aaa;
+    outline:none;
+    height: 26px;
+    vertical-align:middle;
+    font-size: 14px;
+    width: 242px;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+#tt_customName:focus{
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0 ,0 ,0 , .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+#tt_nameOK{
+    right: 20px;
+    top:71px;
+}
+#tt_targetName{
+    width: 352px;
+    height: 30px;
+    line-height: 30px;
+    left: 3px;
+    top:118px;
+    cursor: default;
+    font-size: 14px;
+}
+#tt_timeList{
+    width: 352px;
+    height: 244px;
+    line-height: 244px;
+    left: 3px;
+    top:150px;
+    cursor: default;
+    overflow: auto;
+}
+#tt_msg,#tt_errorMsg{
+    position: relative;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 15px;
+    cursor: default;
+    color: red;
+}
+#tt_drawElipse,#tt_drawRect{
+    top:80px;
+    padding: 2px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+#tt_drawElipse{
+    left: 110px;
+    border-color: green;
+    color: green;
+}
+#tt_drawRect{
+    right: 110px;
+}
+#tt_nodeTime,#tt_elWH,#tt_elPos{
+    left: 135px;
+    font-size: 15px;
+    text-align: center;
+    cursor: default;
+}
+#tt_nodeTime{
+    top:160px;
+}
+#tt_elWH{
+    top:200px;
+}
+#tt_elPos{
+    top:240px;
+}
+#tt_nodeConfirm{
+    right: 75px;
+}
+.posAbsolute{
+    border: 1px solid #FF3838;
+}
+.tt_node,.tt_tgNode{
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    background-color: #D0D0D0;
+    margin: 5px;
+}
+.tt_node > span:nth-child(1),.tt_tgNode > span:nth-child(1){
+    position: absolute;
+    left: 30px;
+}
+.tt_node > span:nth-child(2){
+    position: absolute;
+    left: 90px;
+}
+.tt_node > span:nth-child(3),.tt_tgNode > span:nth-child(2){
+    position: absolute;
+    right: 30px;
+}
+.tt_tgNode > span:nth-child(2){
+    cursor:pointer;
+    color: #C53838;
+}
+/* endregion*/
+

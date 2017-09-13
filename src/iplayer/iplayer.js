@@ -7,27 +7,29 @@ window.iplayer = function (wrapperId,src) {
     ////////////////////////////////////////////      插件变量
     var video = this.video = $("#iplayer").el;
 
-    var mediaSource = new MediaSource();
-    video.src = URL.createObjectURL(mediaSource);
-    mediaSource.addEventListener('sourceopen', function (_) {
-        var mediaSource = this;
-        var sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
-        function fetchAB (url, cb) {
-            var xhr = new XMLHttpRequest;
-            xhr.open('get', url);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                cb(xhr.response);
-            };
-            xhr.send();
-        };
-        fetchAB(src, function (buf) {
-            sourceBuffer.addEventListener('updateend', function (_) {
-                mediaSource.endOfStream();
-            });
-            sourceBuffer.appendBuffer(buf);
-        });
-    });
+    video.src= src;
+
+    // var mediaSource = new MediaSource();
+    // video.src = URL.createObjectURL(mediaSource);
+    // mediaSource.addEventListener('sourceopen', function (_) {
+    //     var mediaSource = this;
+    //     var sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
+    //     function fetchAB (url, cb) {
+    //         var xhr = new XMLHttpRequest;
+    //         xhr.open('get', url);
+    //         xhr.responseType = 'arraybuffer';
+    //         xhr.onload = function () {
+    //             cb(xhr.response);
+    //         };
+    //         xhr.send();
+    //     };
+    //     fetchAB(src, function (buf) {
+    //         sourceBuffer.addEventListener('updateend', function (_) {
+    //             mediaSource.endOfStream();
+    //         });
+    //         sourceBuffer.appendBuffer(buf);
+    //     });
+    // });
 
 
 
